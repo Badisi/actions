@@ -1,0 +1,113 @@
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: The working directory of where to run the commands.
+        type: string
+        default: "."
+      runs-on:
+        description: Type(s) of machine to run the job on.
+        type: string
+        default: '["ubuntu-latest"]'
+      node-versions:
+        description: Node version(s) to be used.
+        type: string
+        default: "[20]"
+      node-arch:
+        description: Node architecture to be used.
+        type: string
+        default: ""
+      setup-chrome:
+        description: Whether to install the latest Chrome version.
+        type: boolean
+        default: false
+      lint:
+        description: Whether to run the command `npm run lint`.
+        type: boolean
+        default: false
+      test:
+        description: Whether to run the command `npm run test:ci`.
+        type: boolean
+        default: false
+      build:
+        description: Whether to run the command `npm run build`.
+        type: boolean
+        default: false
+      release:
+        description: Whether to run the command `npm run release`.
+        type: boolean
+        default: false
+      dry-run:
+        description: Whether to run the command `npm run release:dry-run`.
+        type: boolean
+        default: false
+    secrets:
+      GIT_USER_NAME:
+        description: Username to be used for Git configuration.
+        required: false
+      GIT_USER_EMAIL:
+        description: Email to be used for Git configuration.
+        required: false
+      GH_TOKEN:
+        description: GitHub token to be used for Git operations.
+        required: false
+      NPM_TOKEN:
+        description: Npm token to be used for release operations.
+        required: false
+
+env:
+  HUSKY: 0
+  FORCE_COLOR: 3
+
+jobs:
+  ci_job:
+    strategy:
+      matrix:
+        os: ${{ fromJson(inputs.runs-on) }}
+        node: ${{ fromJson(inputs.node-versions) }}
+
+    name: ${{ matrix.os }}_node${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup
+        uses: badisi/actions/setup@v2
+        with:
+          GIT_USER_NAME: ${{ secrets.GIT_USER_NAME }}
+          GIT_USER_EMAIL: ${{ secrets.GIT_USER_EMAIL }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          node-version: ${{ matrix.node }}
+          node-arch: ${{ inputs.node-arch }}
+          setup-chrome: ${{ inputs.setup-chrome }}
+
+      - name: Lint
+        if: ${{ inputs.lint }}
+        working-directory: ${{ inputs.working-directory }}
+        run: npm run lint
+
+      - name: Test
+        if: ${{ inputs.test }}
+        working-directory: ${{ inputs.working-directory }}
+        run: npm run test:ci
+
+      - name: Build
+        if: ${{ inputs.build }}
+        working-directory: ${{ inputs.working-directory }}
+        run: npm run build
+
+      - name: Release (dry-run)
+        if: ${{ inputs.release && inputs.dry-run }}
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run release:dry-run
+
+      - name: Release
+        if: ${{ inputs.release && !inputs.dry-run }}
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run release
