@@ -51,13 +51,13 @@ on:
       GH_TOKEN:
         description: GitHub token to be used for Git operations.
         required: false
-      NPM_TOKEN:
-        description: Npm token to be used for release operations.
-        required: false
 
 env:
   HUSKY: 0
   FORCE_COLOR: 3
+
+permissions:
+  id-token: write # Required for NPM Trusted Publishers
 
 jobs:
   ci_job:
@@ -98,8 +98,6 @@ jobs:
         if: ${{ inputs.release && inputs.dry-run }}
         working-directory: ${{ inputs.working-directory }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run release:dry-run
 
@@ -107,7 +105,5 @@ jobs:
         if: ${{ inputs.release && !inputs.dry-run }}
         working-directory: ${{ inputs.working-directory }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run release

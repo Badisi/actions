@@ -200,7 +200,6 @@ jobs.<job_id>:
          GIT_USER_NAME: "badisi"
          GIT_USER_EMAIL: "badisi@users.noreply.github.com"
          GH_TOKEN: ${{ secrets.YOUR_GITHUB_TOKEN }}
-         NPM_TOKEN: ${{ secrets.YOUR_NPM_TOKEN }}
        with:
          working-directory: projects/package-a
          lint: true
