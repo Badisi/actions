@@ -57,9 +57,9 @@ jobs.<job_id>.steps[*]:
       # Node version to be used.
       #
       # @examples: 18, '12.x', '10.15.1', '>=10.15.0', 'lts/Hydrogen', '16-nightly', 'latest', 'node'
-      # @default: 22
+      # @default: 24
       #
-      node-version: 22
+      node-version: 24
 
       #
       # Node architecture to be used.
@@ -102,9 +102,9 @@ jobs.<job_id>:
     # Node version(s) to be used.
     #
     # @examples: '[18, 20]', '[12.x]', '[10.15.1]', '[>=10.15.0]', '[lts/Hydrogen]', '[16-nightly]', '[latest]', '[node]'
-    # @default: '[22]'
+    # @default: '[24]'
     #
-    node-versions: "[22]"
+    node-versions: "[24]"
 
     #
     # Node architecture to be used.
@@ -185,7 +185,7 @@ jobs.<job_id>:
        with:
          working-directory: projects/package-a
          runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
-         node-versions: "[20, 22]"
+         node-versions: "[22, 24]"
          lint: true
          test: true
    ```
