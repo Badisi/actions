@@ -51,7 +51,7 @@ Runs the following steps in order and also apply a matrix strategy to run them o
 ```yaml
 jobs.<job_id>.steps[*]:
   - name: Setup
-    uses: badisi/actions/setup@v4
+    uses: badisi/actions/setup@v5
     with:
       #
       # Node version to be used.
@@ -81,7 +81,7 @@ jobs.<job_id>.steps[*]:
 
 ```yaml
 jobs.<job_id>:
-  uses: badisi/actions/.github/workflows/action.yml@v4
+  uses: badisi/actions/.github/workflows/action.yml@v5
   with:
     #
     # The working directory of where to run the commands.
@@ -169,7 +169,7 @@ jobs.<job_id>:
        runs-on: ubuntu-latest
        steps:
          - name: Setup
-           uses: badisi/actions/setup@v4
+           uses: badisi/actions/setup@v5
            with:
              - setup-chrome: true
          - name: Run e2e tests
@@ -181,7 +181,7 @@ jobs.<job_id>:
    ```yaml
    jobs:
      ci_tests:
-       uses: badisi/actions/.github/workflows/action.yml@v4
+       uses: badisi/actions/.github/workflows/action.yml@v5
        with:
          working-directory: projects/package-a
          runs-on: '["ubuntu-latest", "macos-latest", "windows-latest"]'
@@ -195,7 +195,7 @@ jobs.<job_id>:
    ```yaml
    jobs:
      ci_release:
-       uses: badisi/actions/.github/workflows/action.yml@v4
+       uses: badisi/actions/.github/workflows/action.yml@v5
        secrets:
          GIT_USER_NAME: "badisi"
          GIT_USER_EMAIL: "badisi@users.noreply.github.com"
